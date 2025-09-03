@@ -1,0 +1,234 @@
+[
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Black",
+		"HexColor": "#000000",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "White",
+		"HexColor": "#FFFFFF",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Red",
+		"HexColor": "#FF0000",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Blue",
+		"HexColor": "#0000FF",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Yellow",
+		"HexColor": "#FFFF00",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Green",
+		"HexColor": "#008000",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Pink",
+		"HexColor": "#FFC0CB",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Cyan",
+		"HexColor": "#00FFFF",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Teal",
+		"HexColor": "#008080",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Gold",
+		"HexColor": "#FFD700",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Silver",
+		"HexColor": "#C0C0C0",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Maroon",
+		"HexColor": "#800000",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Bronze",
+		"HexColor": "#CD7F32",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST1",
+		"Name": "TOP",
+		"Color": "Copper",
+		"HexColor": "#B87333",
+		"DecorationMethod": "Printing",
+		"BasePrice": 10
+	},
+	{
+		"Style": "TEST2",
+		"Name": "BOT",
+		"Color": "Black",
+		"HexColor": "#000000",
+		"DecorationMethod": "Printing",
+		"BasePrice": 20
+	},
+	{
+		"Style": "TEST2",
+		"Name": "BOT",
+		"Color": "White",
+		"HexColor": "#FFFFFF",
+		"DecorationMethod": "Printing",
+		"BasePrice": 20
+	},
+	{
+		"Style": "TEST2",
+		"Name": "BOT",
+		"Color": "Red",
+		"HexColor": "#FF0000",
+		"DecorationMethod": "Printing",
+		"BasePrice": 20
+	},
+	{
+		"Style": "TEST2",
+		"Name": "BOT",
+		"Color": "Blue",
+		"HexColor": "#0000FF",
+		"DecorationMethod": "Printing",
+		"BasePrice": 20
+	},
+	{
+		"Style": "TEST2",
+		"Name": "BOT",
+		"Color": "Yellow",
+		"HexColor": "#FFFF00",
+		"DecorationMethod": "Printing",
+		"BasePrice": 20
+	},
+	{
+		"Style": "TEST2",
+		"Name": "BOT",
+		"Color": "Green",
+		"HexColor": "#008000",
+		"DecorationMethod": "Printing",
+		"BasePrice": 20
+	},
+	{
+		"Style": "TEST2",
+		"Name": "BOT",
+		"Color": "Pink",
+		"HexColor": "#FFC0CB",
+		"DecorationMethod": "Printing",
+		"BasePrice": 20
+	},
+	{
+		"Style": "TEST3",
+		"Name": "MID",
+		"Color": "Silver",
+		"HexColor": "#C0C0C0",
+		"DecorationMethod": "Printing",
+		"BasePrice": 30
+	},
+	{
+		"Style": "TEST3",
+		"Name": "MID",
+		"Color": "Maroon",
+		"HexColor": "#800000",
+		"DecorationMethod": "Printing",
+		"BasePrice": 30
+	},
+	{
+		"Style": "TEST3",
+		"Name": "MID",
+		"Color": "Bronze",
+		"HexColor": "#CD7F32",
+		"DecorationMethod": "Printing",
+		"BasePrice": 30
+	},
+	{
+		"Style": "TEST3",
+		"Name": "MID",
+		"Color": "Copper",
+		"HexColor": "#B87333",
+		"DecorationMethod": "Printing",
+		"BasePrice": 30
+	},
+	{
+		"Style": "TEST3",
+		"Name": "MID",
+		"Color": "Silver",
+		"HexColor": "#C0C0C0",
+		"DecorationMethod": "Embroidery",
+		"BasePrice": 33
+	},
+	{
+		"Style": "TEST3",
+		"Name": "MID",
+		"Color": "Maroon",
+		"HexColor": "#800000",
+		"DecorationMethod": "Embroidery",
+		"BasePrice": 33
+	},
+	{
+		"Style": "TEST3",
+		"Name": "MID",
+		"Color": "Bronze",
+		"HexColor": "#CD7F32",
+		"DecorationMethod": "Embroidery",
+		"BasePrice": 33
+	},
+	{
+		"Style": "TEST3",
+		"Name": "MID",
+		"Color": "Copper",
+		"HexColor": "#B87333",
+		"DecorationMethod": "Embroidery",
+		"BasePrice": 33
+	}
+]

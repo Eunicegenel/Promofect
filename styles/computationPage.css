@@ -1,0 +1,179 @@
+/* =========================================
+   Computation Page — refreshed, tidy layout
+   ========================================= */
+
+.comp-page {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+}
+
+/* Card shell for the calculator */
+.comp-page .calculator-card {
+	border-radius: 14px;
+	background: #ffffff;
+	border: 1px solid rgba(15, 23, 42, 0.06);
+	box-shadow: 0 8px 20px rgba(2, 8, 23, 0.06);
+	padding: 20px;
+}
+
+.comp-page .product-title {
+	font-size: 18px;
+	font-weight: 800;
+	margin: 0 0 10px;
+}
+
+/* Global field spacing */
+.comp-page .field {
+	display: grid;
+	gap: 6px;
+	margin-bottom: 14px;
+}
+
+.comp-page .field label {
+	font-size: 12px;
+	font-weight: 700;
+	color: #0f172a;
+}
+
+/* Inputs */
+.comp-page .input,
+.comp-page input[type="text"],
+.comp-page input[type="search"],
+.comp-page input[type="number"],
+.comp-page select {
+	width: 100%;
+	border: 1px solid rgba(15, 23, 42, 0.12);
+	border-radius: 10px;
+	padding: 10px 12px;
+	font-size: 14px;
+	outline: none;
+	background: #ffffff;
+}
+.comp-page .input:focus,
+.comp-page input[type="text"]:focus,
+.comp-page input[type="search"]:focus,
+.comp-page input[type="number"]:focus,
+.comp-page select:focus {
+	border-color: #0ea5e9;
+	box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.14);
+}
+
+/* Search results list (used by the search box) */
+.results {
+	list-style: none;
+	margin: 6px 0 0;
+	padding: 0;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	background: #fff;
+	max-height: 240px;
+	overflow: auto;
+}
+.results li button {
+	width: 100%;
+	text-align: left;
+	padding: 10px 12px;
+	border: none;
+	background: none;
+	cursor: pointer;
+	font-size: 14px;
+}
+.results li button:hover { background: #f3f4f6; }
+
+/* Two-column layout: left form, right sticky summary */
+.comp-page .calc-grid {
+	display: grid;
+	gap: 20px;
+}
+
+
+@media (min-width: 960px) {
+	.comp-page .calc-grid {
+		grid-template-columns: 1fr 1fr;
+		align-items: start;
+	}
+}
+.comp-page .calc-summary {
+	position: sticky;
+	top: 20px;
+	border: 1px solid rgba(15, 23, 42, 0.08);
+	border-radius: 12px;
+	padding: 16px;
+	background: #fafafa;
+}
+
+/* Little product header */
+.comp-page .product-head {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	margin: 6px 0 4px;
+}
+.comp-page .product-head .sku {
+	font-weight: 800;
+	font-size: 15px;
+}
+.comp-page .product-head .name {
+	color: #475569;
+	font-size: 14px;
+}
+
+/* Swatches */
+.comp-page .swatch-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+.comp-page .swatch {
+	width: 28px;
+	height: 28px;
+	border-radius: 8px;
+	border: 1px solid #e5e7eb;
+	background: var(--swatch, #e5e7eb);
+	cursor: pointer;
+}
+.comp-page .swatch.selected {
+	outline: 2px solid #0ea5e9;
+	outline-offset: 2px;
+}
+
+/* Totals / numbers */
+.comp-page .totals {
+	display: grid;
+	gap: 8px;
+	border-top: 1px dashed #e5e7eb;
+	margin-top: 12px;
+	padding-top: 12px;
+}
+.comp-page .line {
+	display: flex;
+	justify-content: space-between;
+	font-size: 14px;
+}
+.comp-page .line strong { font-weight: 800; }
+.comp-page .grand {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	margin-top: 8px;
+}
+.comp-page .grand .label {
+	font-weight: 800;
+	font-size: 13px;
+	color: #0f172a;
+}
+.comp-page .grand .value {
+	font-weight: 900;
+	font-size: 22px;
+}
+
+/* Small helper text */
+.comp-page .muted {
+	color: #6b7280;
+	font-size: 12px;
+}
+
+.deduction {
+	color:  #c9504c;
+}

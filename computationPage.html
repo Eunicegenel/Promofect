@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thread & Co. — Computation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Shared app layout + page-specific styles -->
+  <link rel="stylesheet" href="./styles/app.css" />
+  <link rel="stylesheet" href="./styles/computationPage.css" />
+  <style>
+    /* Small helpers just for the search results list */
+    .results { list-style:none; margin:6px 0 0; padding:0; border:1px solid #e5e7eb; border-radius:12px; background:#fff; max-height:240px; overflow:auto; }
+    .results li button { width:100%; text-align:left; padding:10px 12px; border:none; background:none; cursor:pointer; }
+    .results li button:hover { background:#f3f4f6; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React UMD -->
+  <script src="./vendor/react.production.min.js"></script>
+  <script src="./vendor/react-dom.production.min.js"></script>
+
+  <!-- Shared components (same as index.html) -->
+  <script src="./components/core.js"></script>
+  <script src="./components/icons.js"></script>
+  <script src="./components/routes.js"></script>
+  <script src="./components/header.js"></script>
+  <script src="./components/sidebar.js"></script>
+
+  <!-- Your data wrapper: window.PRICE_LIST = [ ... ] -->
+  <script src="./javascript/priceList.js"></script>
+
+  <!-- Page script -->
+  <script src="./pages/computationPage.js"></script>
+</body>
+</html>
