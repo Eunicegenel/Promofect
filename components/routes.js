@@ -7,9 +7,9 @@
   };
 
   const categories = [
-    { id: 'dashboard',       name: 'Dashboard' },
-    { id: 'computationPage', name: 'Computation Page' },
-    { id: 'manualComputationPage', name: 'Manual Computation Page' },
+    { id: 'dashboard', name: 'Dashboard', icon: 'dashboard' },
+    { id: 'computationPage', name: 'Computation Page', icon: 'calculator' },
+    { id: 'manualComputationPage', name: 'Manual Computation Page', icon: 'scale' }
   ];
 
   function currentFile() {

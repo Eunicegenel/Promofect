@@ -7,7 +7,6 @@
     const n = Number(v);
     return Number.isFinite(n) ? Math.max(min, n) : fallback;
   };
-  const colorSurcharge = (n) => (n <= 0 ? 0 : 3 + (n - 1) * 1.5);
 
   const moneyFmt = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
@@ -31,29 +30,29 @@
   ];
 
   const defaultBreaksFrontColor = [
-    { id: 1,  minQty: 1,  deduct: 0 },
-    { id: 2,  minQty: 2,  deduct: 0 },
-    { id: 3,  minQty: 3,  deduct: 0 },
-    { id: 4,  minQty: 4,  deduct: 0 },
-    { id: 5,  minQty: 5,  deduct: 0 },
-    { id: 6,  minQty: 6,  deduct: 0 },
-    { id: 7,  minQty: 7,  deduct: 0 },
-    { id: 8,  minQty: 8,  deduct: 0 },
-    { id: 9,  minQty: 9,  deduct: 0 },
-    { id: 10, minQty: 10, deduct: 0 }
+    { id: 1,  minQty: 10,  deduct: 0 },
+    { id: 2,  minQty: 20,  deduct: 0 },
+    { id: 3,  minQty: 30,  deduct: 0 },
+    { id: 4,  minQty: 40,  deduct: 0 },
+    { id: 5,  minQty: 50,  deduct: 0 },
+    { id: 6,  minQty: 60,  deduct: 0 },
+    { id: 7,  minQty: 70,  deduct: 0 },
+    { id: 8,  minQty: 80,  deduct: 0 },
+    { id: 9,  minQty: 90,  deduct: 0 },
+    { id: 10, minQty: 100, deduct: 0 }
   ];
 
   const defaultBreaksBackColor = [
-    { id: 1,  minQty: 1,  deduct: 0 },
-    { id: 2,  minQty: 2,  deduct: 0 },
-    { id: 3,  minQty: 3,  deduct: 0 },
-    { id: 4,  minQty: 4,  deduct: 0 },
-    { id: 5,  minQty: 5,  deduct: 0 },
-    { id: 6,  minQty: 6,  deduct: 0 },
-    { id: 7,  minQty: 7,  deduct: 0 },
-    { id: 8,  minQty: 8,  deduct: 0 },
-    { id: 9,  minQty: 9,  deduct: 0 },
-    { id: 10, minQty: 10, deduct: 0 }
+    { id: 1,  minQty: 10,  deduct: 0 },
+    { id: 2,  minQty: 20,  deduct: 0 },
+    { id: 3,  minQty: 30,  deduct: 0 },
+    { id: 4,  minQty: 40,  deduct: 0 },
+    { id: 5,  minQty: 50,  deduct: 0 },
+    { id: 6,  minQty: 60,  deduct: 0 },
+    { id: 7,  minQty: 70,  deduct: 0 },
+    { id: 8,  minQty: 80,  deduct: 0 },
+    { id: 9,  minQty: 90,  deduct: 0 },
+    { id: 10, minQty: 100, deduct: 0 }
   ];
 
   // ---------- Little UI helpers ----------
@@ -187,9 +186,17 @@
     );
   }
 
-  function FrontColorDialog({ open, breaks, setBreaks, onClose, onReset }) {
+  function FrontColorDialog({ open, breaks, setBreaks, firstPrice, setFirstPrice, addlPrice, setAddlPrice, onClose, onReset }) {
     const [rows, setRows] = useState(breaks);
-    useEffect(() => { if (open) setRows(breaks); }, [open, breaks]);
+    const [localFirst, setLocalFirst] = useState(firstPrice);
+    const [localAddl, setLocalAddl] = useState(addlPrice);
+    useEffect(() => { 
+      if (open) {
+        setRows(breaks);
+        setLocalFirst(firstPrice);
+        setLocalAddl(addlPrice);
+      }
+    }, [open, breaks, firstPrice, addlPrice]);
 
     useEffect(() => {
       if (!open) return;
@@ -210,7 +217,15 @@
     const save = () => {
       const sorted = [...rows].sort((a,b) => a.minQty - b.minQty);
       setBreaks(sorted);
+      setFirstPrice(localFirst);
+      setAddlPrice(localAddl);
       onClose();
+    };
+
+    const reset = () => {
+      onReset();
+      setLocalFirst(3);
+      setLocalAddl(1.5);
     };
 
     return e('div', {
@@ -264,9 +279,32 @@
             )
           )
         ),
+        e('div', { style: { marginTop: 16, marginBottom: 12 } },
+          e('h4', { style: { fontSize: '14px', marginBottom: 8 } }, 'Surcharge Settings'),
+          e('div', { style: { display: 'flex', gap: '12px' } },
+            e('div', { style: { flex: 1 } },
+              e('label', { style: { fontSize: '12px', color: '#6b7280', fontWeight: 700 } }, 'First color surcharge ($)'),
+              e('input', {
+                type: 'number', min: 0, step: '0.01',
+                className: 'input',
+                value: localFirst,
+                onChange: (ev) => setLocalFirst(clampNum(ev.target.value, { min: 0 }))
+              })
+            ),
+            e('div', { style: { flex: 1 } },
+              e('label', { style: { fontSize: '12px', color: '#6b7280', fontWeight: 700 } }, 'Additional color surcharge ($)'),
+              e('input', {
+                type: 'number', min: 0, step: '0.01',
+                className: 'input',
+                value: localAddl,
+                onChange: (ev) => setLocalAddl(clampNum(ev.target.value, { min: 0 }))
+              })
+            )
+          )
+        ),
         e('div', { style:{ display:'flex', justifyContent:'space-between', marginTop:14 } },
           e('button', {
-            onClick: onReset,
+            onClick: reset,
             style: btnSecondary,
             onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
             onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
@@ -291,9 +329,17 @@
     );
   }
 
-  function BackColorDialog({ open, breaks, setBreaks, onClose, onReset }) {
+  function BackColorDialog({ open, breaks, setBreaks, firstPrice, setFirstPrice, addlPrice, setAddlPrice, onClose, onReset }) {
     const [rows, setRows] = useState(breaks);
-    useEffect(() => { if (open) setRows(breaks); }, [open, breaks]);
+    const [localFirst, setLocalFirst] = useState(firstPrice);
+    const [localAddl, setLocalAddl] = useState(addlPrice);
+    useEffect(() => { 
+      if (open) {
+        setRows(breaks);
+        setLocalFirst(firstPrice);
+        setLocalAddl(addlPrice);
+      }
+    }, [open, breaks, firstPrice, addlPrice]);
 
     useEffect(() => {
       if (!open) return;
@@ -314,7 +360,15 @@
     const save = () => {
       const sorted = [...rows].sort((a,b) => a.minQty - b.minQty);
       setBreaks(sorted);
+      setFirstPrice(localFirst);
+      setAddlPrice(localAddl);
       onClose();
+    };
+
+    const reset = () => {
+      onReset();
+      setLocalFirst(3);
+      setLocalAddl(1.5);
     };
 
     return e('div', {
@@ -368,9 +422,32 @@
             )
           )
         ),
+        e('div', { style: { marginTop: 16, marginBottom: 12 } },
+          e('h4', { style: { fontSize: '14px', marginBottom: 8 } }, 'Surcharge Settings'),
+          e('div', { style: { display: 'flex', gap: '12px' } },
+            e('div', { style: { flex: 1 } },
+              e('label', { style: { fontSize: '12px', color: '#6b7280', fontWeight: 700 } }, 'First color surcharge ($)'),
+              e('input', {
+                type: 'number', min: 0, step: '0.01',
+                className: 'input',
+                value: localFirst,
+                onChange: (ev) => setLocalFirst(clampNum(ev.target.value, { min: 0 }))
+              })
+            ),
+            e('div', { style: { flex: 1 } },
+              e('label', { style: { fontSize: '12px', color: '#6b7280', fontWeight: 700 } }, 'Additional color surcharge ($)'),
+              e('input', {
+                type: 'number', min: 0, step: '0.01',
+                className: 'input',
+                value: localAddl,
+                onChange: (ev) => setLocalAddl(clampNum(ev.target.value, { min: 0 }))
+              })
+            )
+          )
+        ),
         e('div', { style:{ display:'flex', justifyContent:'space-between', marginTop:14 } },
           e('button', {
-            onClick: onReset,
+            onClick: reset,
             style: btnSecondary,
             onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
             onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
@@ -418,6 +495,22 @@
       localStorage.setItem('threadco_price_breaks_front_color_v1', JSON.stringify(priceBreaksFrontColor));
     }, [priceBreaksFrontColor]);
 
+    const [frontFirstColorPrice, setFrontFirstColorPrice] = useState(() => {
+      const saved = localStorage.getItem('threadco_front_first_color_price_v1');
+      return saved ? parseFloat(saved) : 3;
+    });
+    useEffect(() => {
+      localStorage.setItem('threadco_front_first_color_price_v1', frontFirstColorPrice.toString());
+    }, [frontFirstColorPrice]);
+
+    const [frontAddlColorPrice, setFrontAddlColorPrice] = useState(() => {
+      const saved = localStorage.getItem('threadco_front_addl_color_price_v1');
+      return saved ? parseFloat(saved) : 1.5;
+    });
+    useEffect(() => {
+      localStorage.setItem('threadco_front_addl_color_price_v1', frontAddlColorPrice.toString());
+    }, [frontAddlColorPrice]);
+
     const [priceBreaksBackColor, setPriceBreaksBackColor] = useState(() => {
       const saved = localStorage.getItem('threadco_price_breaks_back_color_v1');
       return saved ? JSON.parse(saved) : defaultBreaksBackColor;
@@ -426,6 +519,22 @@
       localStorage.setItem('threadco_price_breaks_back_color_v1', JSON.stringify(priceBreaksBackColor));
     }, [priceBreaksBackColor]);
 
+    const [backFirstColorPrice, setBackFirstColorPrice] = useState(() => {
+      const saved = localStorage.getItem('threadco_back_first_color_price_v1');
+      return saved ? parseFloat(saved) : 3;
+    });
+    useEffect(() => {
+      localStorage.setItem('threadco_back_first_color_price_v1', backFirstColorPrice.toString());
+    }, [backFirstColorPrice]);
+
+    const [backAddlColorPrice, setBackAddlColorPrice] = useState(() => {
+      const saved = localStorage.getItem('threadco_back_addl_color_price_v1');
+      return saved ? parseFloat(saved) : 1.5;
+    });
+    useEffect(() => {
+      localStorage.setItem('threadco_back_addl_color_price_v1', backAddlColorPrice.toString());
+    }, [backAddlColorPrice]);
+
     const [openDialog, setOpenDialog] = useState(false);
     const [openFrontColorDialog, setOpenFrontColorDialog] = useState(false);
     const [openBackColorDialog, setOpenBackColorDialog] = useState(false);
@@ -433,8 +542,14 @@
     const qtySafe = useMemo(() => clampNum(qty, { min: 1, fallback: 1 }), [qty]);
     const frontColorsSafe = useMemo(() => clampNum(frontColors, { min: 0, fallback: 0 }), [frontColors]);
     const backColorsSafe = useMemo(() => clampNum(backColors, { min: 0, fallback: 0 }), [backColors]);
-    const frontSurcharge = useMemo(() => colorSurcharge(frontColorsSafe), [frontColorsSafe]);
-    const backSurcharge  = useMemo(() => colorSurcharge(backColorsSafe), [backColorsSafe]);
+    const frontSurcharge = useMemo(() => {
+      if (frontColorsSafe <= 0) return 0;
+      return frontFirstColorPrice + (frontColorsSafe - 1) * frontAddlColorPrice;
+    }, [frontColorsSafe, frontFirstColorPrice, frontAddlColorPrice]);
+    const backSurcharge = useMemo(() => {
+      if (backColorsSafe <= 0) return 0;
+      return backFirstColorPrice + (backColorsSafe - 1) * backAddlColorPrice;
+    }, [backColorsSafe, backFirstColorPrice, backAddlColorPrice]);
 
     // NEW: choose the last non-zero deduction among eligible thresholds
     const appliedBreak = useMemo(() => {
@@ -572,7 +687,7 @@
                     onChange: parseOnChange(setFrontColors, { min: 0, fallback: 0 }),
                     onBlur: () => setFrontColors((v) => (v === "" ? 0 : v))
                   }),
-                  e('span', { className: 'muted' }, 'First color +$3, +$1.5 each addl.'),
+                  e('span', { className: 'muted' }, `First color +${money(frontFirstColorPrice)}, +${money(frontAddlColorPrice)} each addl.`),
                   appliedBreakFrontColor
                     ? e('div', { className: 'muted', style:{ marginTop: '4px' } },
                         `Applying −${money(appliedBreakFrontColor.deduct)} at ≥ ${appliedBreakFrontColor.minQty} colors`)
@@ -602,7 +717,7 @@
                     onChange: parseOnChange(setBackColors, { min: 0, fallback: 0 }),
                     onBlur: () => setBackColors((v) => (v === "" ? 0 : v))
                   }),
-                  e('span', { className: 'muted' }, 'First color +$3, +$1.5 each addl.'),
+                  e('span', { className: 'muted' }, `First color +${money(backFirstColorPrice)}, +${money(backAddlColorPrice)} each addl.`),
                   appliedBreakBackColor
                     ? e('div', { className: 'muted', style:{ marginTop: '4px' } },
                         `Applying −${money(appliedBreakBackColor.deduct)} at ≥ ${appliedBreakBackColor.minQty} colors`)
@@ -624,13 +739,13 @@
                 e('span', null, 'Front Surcharge'),
                 e('strong', null, money(frontSurcharge))
               ),
-              appliedBreakFrontColor && e('div', { className: 'line' },
-                e('span', null, `Front Color Deduction`),
-                e('strong', { className: 'deduction' }, `−${money(appliedBreakFrontColor.deduct)}`)
-              ),
               e('div', { className: 'line' },
                 e('span', null, 'Back Surcharge'),
                 e('strong', null, money(backSurcharge))
+              ),
+              appliedBreakFrontColor && e('div', { className: 'line' },
+                e('span', null, `Front Color Deduction`),
+                e('strong', { className: 'deduction' }, `−${money(appliedBreakFrontColor.deduct)}`)
               ),
               appliedBreakBackColor && e('div', { className: 'line' },
                 e('span', null, `Back Color Deduction`),
@@ -665,6 +780,10 @@
           open: openFrontColorDialog,
           breaks: priceBreaksFrontColor,
           setBreaks: setPriceBreaksFrontColor,
+          firstPrice: frontFirstColorPrice,
+          setFirstPrice: setFrontFirstColorPrice,
+          addlPrice: frontAddlColorPrice,
+          setAddlPrice: setFrontAddlColorPrice,
           onClose: () => setOpenFrontColorDialog(false),
           onReset: resetBreaksFrontColor
         }),
@@ -673,6 +792,10 @@
           open: openBackColorDialog,
           breaks: priceBreaksBackColor,
           setBreaks: setPriceBreaksBackColor,
+          firstPrice: backFirstColorPrice,
+          setFirstPrice: setBackFirstColorPrice,
+          addlPrice: backAddlColorPrice,
+          setAddlPrice: setBackAddlColorPrice,
           onClose: () => setOpenBackColorDialog(false),
           onReset: resetBreaksBackColor
         })

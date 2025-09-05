@@ -56,7 +56,7 @@ body {
   align-items: center;
   gap: 16px;
   padding: 0 20px;
-  background: #000;
+  background: #FFF;
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
@@ -87,12 +87,12 @@ body {
   font-weight: 800;
   margin: 0;
   letter-spacing: 0.2px;
-  color: #fff;
+  color: #000;
 }
 .brand-sub {
   margin: 2px 0 0;
   font-size: 12px;
-  color: #fff;
+  color: #e84a52;
 }
 
 /* Search */
@@ -165,52 +165,58 @@ body {
 /* Sidebar */
 .sidebar {
   grid-area: sidebar;
-  background: var(--panel);
-  border-right: 1px solid var(--border);
-  padding: 16px;
+  background-image: linear-gradient(to bottom, #e84a52, #cc3e45, #b13338, #97272c, #7e1c20);
   display: flex;
   flex-direction: column;
-  gap: 14px;
 }
-.sidebar-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-}
+
 .cat-list {
   list-style: none;
-  padding: 0; margin: 0;
-  display: grid; gap: 6px;
+  margin: 0;
+  padding: 0;
+  display: grid;
 }
+
 .cat-item {
-  display: block; /* works for both <button> and <a> */
-  width: 100%;
-  text-align: left;
-  padding: 10px 12px;
-  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 12px 14px;
   border: 1px solid transparent;
-  background: #fff;
-  cursor: pointer;
-  color: var(--text);
-  text-decoration: none; /* removes underline for links */
-}
-.cat-item:hover {
-  background: #f6f7fb;
-  border-color: var(--border);
-}
-.cat-item.active {
-  background: #111827;
   color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
 }
-.sidebar-foot { margin-top: auto; }
-.hint {
-  font-size: 12px;
-  color: var(--muted);
-  padding: 10px 12px;
-  border: 1px dashed var(--border);
-  border-radius: 12px;
-  background: #fafafc;
+
+.cat-item:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.cat-item.active {
+  background: rgba(248, 244, 244, 0.2);
+  color: #fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+}
+
+.icon-svg {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: brightness(0) invert(1); 
+}
+
+.cat-item.active .icon-svg {
+  filter: brightness(0) invert(1); 
+}
+
+.cat-icon {
+  height: 18px;
+}
+
+.cat-label {
+  flex: 1;
 }
 
 /* Content */

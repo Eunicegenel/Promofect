@@ -7,15 +7,10 @@
 			el('div', { className: 'brand' },
 				el(Icon.logo),
 				el('div', null,
-					el('h1', { className: 'brand-title' }, 'Thread & Co.'),
-					el('p',  { className: 'brand-sub'   }, 'Everyday essentials, thoughtfully made')
+					el('h1', { className: 'brand-title' }, 'PROMOFECT'),
+					el('p',  { className: 'brand-sub'   }, 'Promote your Brand in Perfect Style')
 				)
 			),
-			el('div', { className: 'search' },
-				el('label', { className: 'visually-hidden', htmlFor: 'search' }, 'Search'),
-				el('input', { id: 'search', className: 'search-input', placeholder: 'Search clothing, sizes, colors…', type: 'search' }),
-				el('button', { className: 'btn ghost', type: 'button', title: 'Search' }, el(Icon.search))
-			)
 		);
 	}
 
