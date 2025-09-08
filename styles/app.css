@@ -314,6 +314,6 @@ body {
 @media (max-width: 640px) {
   .grid { grid-template-columns: repeat(6, 1fr); }
   .card { grid-column: span 6; }
-  .brand-sub { display: none; }
+  .brand-title, .brand-sub { display: none; }
   .cart-label { display: none; }
 }

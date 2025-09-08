@@ -18,41 +18,41 @@
   // ---------- Default price breaks ----------
   const defaultBreaks = [
     { id: 1,  minQty: 12,  deduct: 0 },
-    { id: 2,  minQty: 24,  deduct: 0 },
-    { id: 3,  minQty: 36,  deduct: 0 },
-    { id: 4,  minQty: 48,  deduct: 0 },
-    { id: 5,  minQty: 60,  deduct: 0 },
-    { id: 6,  minQty: 72,  deduct: 0 },
-    { id: 7,  minQty: 84,  deduct: 0 },
-    { id: 8,  minQty: 96,  deduct: 0 },
-    { id: 9,  minQty: 108, deduct: 0 },
-    { id: 10, minQty: 120, deduct: 0 }
+    { id: 2,  minQty: 24,  deduct: 0.5 },
+    { id: 3,  minQty: 48,  deduct: 1 },
+    { id: 4,  minQty: 72,  deduct: 1.5 },
+    { id: 5,  minQty: 144,  deduct: 2 },
+    { id: 6,  minQty: 288,  deduct: 2.5 },
+    { id: 7,  minQty: 500,  deduct: 3 },
+    { id: 8,  minQty: 1000,  deduct: 3.5 },
+    { id: 9,  minQty: 2500, deduct: 4 },
+    { id: 10, minQty: 3000, deduct: 0 }
   ];
 
   const defaultBreaksFrontColor = [
-    { id: 1,  minQty: 10,  deduct: 0 },
-    { id: 2,  minQty: 20,  deduct: 0 },
-    { id: 3,  minQty: 30,  deduct: 0 },
-    { id: 4,  minQty: 40,  deduct: 0 },
-    { id: 5,  minQty: 50,  deduct: 0 },
-    { id: 6,  minQty: 60,  deduct: 0 },
-    { id: 7,  minQty: 70,  deduct: 0 },
-    { id: 8,  minQty: 80,  deduct: 0 },
-    { id: 9,  minQty: 90,  deduct: 0 },
-    { id: 10, minQty: 100, deduct: 0 }
+    { id: 1,  minQty: 1,  deduct: 0 },
+    { id: 2,  minQty: 2,  deduct: 0 },
+    { id: 3,  minQty: 3,  deduct: 0 },
+    { id: 4,  minQty: 4,  deduct: 0 },
+    { id: 5,  minQty: 5,  deduct: 0 },
+    { id: 6,  minQty: 6,  deduct: 0 },
+    { id: 7,  minQty: 7,  deduct: 0 },
+    { id: 8,  minQty: 8,  deduct: 0 },
+    { id: 9,  minQty: 9,  deduct: 0 },
+    { id: 10, minQty: 10, deduct: 0 }
   ];
 
   const defaultBreaksBackColor = [
-    { id: 1,  minQty: 10,  deduct: 0 },
-    { id: 2,  minQty: 20,  deduct: 0 },
-    { id: 3,  minQty: 30,  deduct: 0 },
-    { id: 4,  minQty: 40,  deduct: 0 },
-    { id: 5,  minQty: 50,  deduct: 0 },
-    { id: 6,  minQty: 60,  deduct: 0 },
-    { id: 7,  minQty: 70,  deduct: 0 },
-    { id: 8,  minQty: 80,  deduct: 0 },
-    { id: 9,  minQty: 90,  deduct: 0 },
-    { id: 10, minQty: 100, deduct: 0 }
+    { id: 1,  minQty: 1,  deduct: 0 },
+    { id: 2,  minQty: 2,  deduct: 0 },
+    { id: 3,  minQty: 3,  deduct: 0 },
+    { id: 4,  minQty: 4,  deduct: 0 },
+    { id: 5,  minQty: 5,  deduct: 0 },
+    { id: 6,  minQty: 6,  deduct: 0 },
+    { id: 7,  minQty: 7,  deduct: 0 },
+    { id: 8,  minQty: 8,  deduct: 0 },
+    { id: 9,  minQty: 9,  deduct: 0 },
+    { id: 10, minQty: 10, deduct: 0 }
   ];
 
   // ---------- Little UI helpers ----------
@@ -68,8 +68,20 @@
     gap: '6px',
     cursor: 'pointer',
     boxShadow: '0 1px 1px rgba(0,0,0,.03)',
+    transition: 'background 0.15s ease-in-out'
   };
   const btnSecondaryHover = { background: '#f9fafb' };
+  const btnPrimary = {
+    padding: '8px 14px',
+    borderRadius: '10px',
+    border: '1px solid #111827',
+    background: '#111827',
+    color: '#fff',
+    fontWeight: 700,
+    cursor: 'pointer',
+    transition: 'background 0.15s ease-in-out'
+  };
+  const btnPrimaryHover = { background: '#1f2937' };
   const dialogOverlayStyle = {
     position: 'fixed', inset: 0, background: 'rgba(0,0,0,.35)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -120,7 +132,7 @@
             onClick: onClose,
             style: { ...btnSecondary, padding:'4px 8px' },
             onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-            onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+            onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
           }, 'Close')
         ),
         e('p', { className:'muted', style:{marginTop:0, marginBottom:12} },
@@ -164,21 +176,20 @@
             onClick: onReset,
             style: btnSecondary,
             onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-            onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+            onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
           }, 'Reset to defaults'),
           e('div', null,
             e('button', {
               onClick: onClose,
               style:{ ...btnSecondary, marginRight:8 },
               onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-              onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+              onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
             }, 'Cancel'),
             e('button', {
               onClick: save,
-              style:{
-                padding:'8px 14px', borderRadius:'10px', border:'1px solid #111827',
-                background:'#111827', color:'#fff', fontWeight:700, cursor:'pointer'
-              }
+              style: btnPrimary,
+              onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnPrimaryHover),
+              onMouseLeave: (e)=>e.currentTarget.style.background = '#111827'
             }, 'Save')
           )
         )
@@ -240,7 +251,7 @@
             onClick: onClose,
             style: { ...btnSecondary, padding:'4px 8px' },
             onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-            onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+            onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
           }, 'Close')
         ),
         e('p', { className:'muted', style:{marginTop:0, marginBottom:12} },
@@ -307,21 +318,20 @@
             onClick: reset,
             style: btnSecondary,
             onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-            onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+            onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
           }, 'Reset to defaults'),
           e('div', null,
             e('button', {
               onClick: onClose,
               style:{ ...btnSecondary, marginRight:8 },
               onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-              onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+              onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
             }, 'Cancel'),
             e('button', {
               onClick: save,
-              style:{
-                padding:'8px 14px', borderRadius:'10px', border:'1px solid #111827',
-                background:'#111827', color:'#fff', fontWeight:700, cursor:'pointer'
-              }
+              style: btnPrimary,
+              onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnPrimaryHover),
+              onMouseLeave: (e)=>e.currentTarget.style.background = '#111827'
             }, 'Save')
           )
         )
@@ -383,7 +393,7 @@
             onClick: onClose,
             style: { ...btnSecondary, padding:'4px 8px' },
             onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-            onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+            onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
           }, 'Close')
         ),
         e('p', { className:'muted', style:{marginTop:0, marginBottom:12} },
@@ -450,21 +460,20 @@
             onClick: reset,
             style: btnSecondary,
             onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-            onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+            onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
           }, 'Reset to defaults'),
           e('div', null,
             e('button', {
               onClick: onClose,
               style:{ ...btnSecondary, marginRight:8 },
               onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-              onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+              onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
             }, 'Cancel'),
             e('button', {
               onClick: save,
-              style:{
-                padding:'8px 14px', borderRadius:'10px', border:'1px solid #111827',
-                background:'#111827', color:'#fff', fontWeight:700, cursor:'pointer'
-              }
+              style: btnPrimary,
+              onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnPrimaryHover),
+              onMouseLeave: (e)=>e.currentTarget.style.background = '#111827'
             }, 'Save')
           )
         )
@@ -584,12 +593,17 @@
 
     const unitPrice = useMemo(() => {
       const frontAppliedDeduct = appliedBreakFrontColor?.deduct || 0;
-      const backAppliedDeduct = appliedBreakBackColor?.deduct || 0;
-      const raw = clampNum(basePrice, { min: 0 }) + Math.max(0, frontSurcharge - frontAppliedDeduct) + Math.max(0, backSurcharge - backAppliedDeduct);
-      return Math.max(0, raw - (appliedBreak?.deduct || 0));
-    }, [basePrice, frontSurcharge, backSurcharge, appliedBreak, appliedBreakFrontColor, appliedBreakBackColor]);
+      const backAppliedDeduct = appliedBreakBackColor?.deduct || 0;;
+      return clampNum(basePrice, { min: 0 }) + Math.max(0, frontSurcharge) + Math.max(0, backSurcharge);
+    }, [basePrice, frontSurcharge, backSurcharge]);
 
     const totalPrice = useMemo(() => unitPrice * qtySafe, [unitPrice, qtySafe]);
+
+    const finalPrice = useMemo(() => {
+      const frontAppliedDeduct = appliedBreakFrontColor?.deduct || 0;
+      const backAppliedDeduct = appliedBreakBackColor?.deduct || 0;
+      return Math.max(0, totalPrice - (appliedBreak?.deduct || 0) - frontAppliedDeduct - backAppliedDeduct);
+    }, [basePrice, appliedBreakFrontColor, appliedBreakBackColor, totalPrice]);
 
     // inputs helpers
     const clearZeroOnFocus = (val, setter) => { if (String(val) === "0") setter(""); };
@@ -643,7 +657,7 @@
                   onClick: () => setOpenDialog(true),
                   style: btnSecondary,
                   onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-                  onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+                  onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
                 }, '⚙️', ' ', 'Price Breaks')
               ),
               e('input', {
@@ -676,7 +690,7 @@
                       onClick: () => setOpenFrontColorDialog(true),
                       style: btnSecondary,
                       onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-                      onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+                      onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
                     }, '⚙️', ' ', 'Price Breaks'),
                   ),
                   e('input', {
@@ -706,7 +720,7 @@
                       onClick: () => setOpenBackColorDialog(true),
                       style: btnSecondary,
                       onMouseEnter: (e)=>Object.assign(e.currentTarget.style, btnSecondaryHover),
-                      onMouseLeave: (e)=>e.currentTarget.removeAttribute('style')
+                      onMouseLeave: (e)=>e.currentTarget.style.background = '#fff'
                     }, '⚙️', ' ', 'Price Breaks'),
                   ),
                   e('input', {
@@ -743,6 +757,16 @@
                 e('span', null, 'Back Surcharge'),
                 e('strong', null, money(backSurcharge))
               ),
+              e('div', { className: 'line', style: { marginTop:'8px', borderTop:'1px solid #e5e7eb', paddingTop:'8px' } },
+                e('span', null, 'Unit Price'),
+                e('strong', null, money(unitPrice))
+              ),
+              e('div', { className: 'line', style: { marginTop:'8px', borderTop:'1px solid #e5e7eb', paddingTop:'8px' } }),
+              e('div', { className: 'grand' },
+                e('span', { className: 'label' }, `Price For ${intFmt.format(qtySafe)} Unit${qtySafe !== 1 ? 's' : ''}`),
+                e('span', { className: 'value' }, money(totalPrice))
+              ),
+              e('div', { className: 'line', style: { marginTop:'8px', borderTop:'1px solid #e5e7eb', paddingTop:'8px' } }),
               appliedBreakFrontColor && e('div', { className: 'line' },
                 e('span', null, `Front Color Deduction`),
                 e('strong', { className: 'deduction' }, `−${money(appliedBreakFrontColor.deduct)}`)
@@ -755,13 +779,9 @@
                 e('span', null, `Quantity Deduction`),
                 e('strong', { className: 'deduction' }, `−${money(appliedBreak.deduct)}`)
               ),
-              e('div', { className: 'line', style: { marginTop:'8px', borderTop:'1px solid #e5e7eb', paddingTop:'8px' } },
-                e('span', null, 'Unit Price'),
-                e('strong', null, money(unitPrice))
-              ),
               e('div', { className: 'grand' },
-                e('span', { className: 'label' }, `Total for ${intFmt.format(qtySafe)} unit${qtySafe !== 1 ? 's' : ''}`),
-                e('span', { className: 'value' }, money(totalPrice))
+                e('span', { className: 'label' }, `Final Price After Deductions`),
+                e('span', { className: 'value' }, money(finalPrice))
               )
             )
           )
