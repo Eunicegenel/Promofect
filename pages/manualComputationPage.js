@@ -15,6 +15,35 @@
   const intFmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
   const money = (n) => `$${moneyFmt.format(n)}`;
 
+  const calculateBasePrice = (itemCost) => {
+    if (itemCost <= 4.99) return itemCost * 4;
+    else if (itemCost <= 9.99) return itemCost * 3;
+    else if (itemCost <= 19.99) return itemCost * 2.5;
+    else if (itemCost <= 49.99) return itemCost * 1.75;
+    else return itemCost * 1.5;
+  };
+
+  const getMarkupCondition = (itemCost) => {
+    if (itemCost <= 4.99) return `If item cost is ≤ $4.99`;
+    else if (itemCost <= 9.99) return `If item cost is in $5 - $9.99`;
+    else if (itemCost <= 19.99) return `If item cost is in $10 - $19.99`;
+    else if (itemCost <= 49.99) return `If item cost is in $20 - $49.99`;
+    else return `If item cost is ≥ $50`;
+  }; 
+  
+  const getMarkupComputation = (itemCost) => {
+    if (itemCost <= 4.99) return `New Price = item cost + (itemCost*3)`;
+    else if (itemCost <= 9.99) return `New Price = item cost + (itemCost*2)`;
+    else if (itemCost <= 19.99) return `New Price = item cost + (itemCost*1.5)`;
+    else if (itemCost <= 49.99) return `New Price = item cost + (itemCost*0.75)`;
+    else return `New Price = item cost + (itemCost*0.5)`;
+  }; 
+  
+  const getEmbroideryText = (stitches) => {
+    if (stitches < 5000) return "$8.50 per logo";
+    else return "$8.50 + $3 per 1000 stitches over 5000";
+  };
+
   // ---------- Default price breaks ----------
   const defaultBreaks = [
     { id: 1,  minQty: 12,  deduct: 0 },
@@ -483,10 +512,14 @@
 
   // ---------- Main component ----------
   function Computation() {
-    const [basePrice, setBasePrice]     = useState(0);
+    const [itemCost, setItemCost]       = useState(0);
     const [qty, setQty]                 = useState(1);
     const [frontColors, setFrontColors] = useState(1);
     const [backColors, setBackColors]   = useState(0);
+    const [imprint4x4, setImprint4x4]   = useState(0);
+    const [imprint14x9, setImprint14x9] = useState(0);
+    const [stitches, setStitches]       = useState(0);
+    const [specialtyCount, setSpecialtyCount] = useState(0);
 
     const [priceBreaks, setPriceBreaks] = useState(() => {
       const saved = localStorage.getItem('threadco_price_breaks_v1');
@@ -551,6 +584,17 @@
     const qtySafe = useMemo(() => clampNum(qty, { min: 1, fallback: 1 }), [qty]);
     const frontColorsSafe = useMemo(() => clampNum(frontColors, { min: 0, fallback: 0 }), [frontColors]);
     const backColorsSafe = useMemo(() => clampNum(backColors, { min: 0, fallback: 0 }), [backColors]);
+    const itemCostSafe = useMemo(() => clampNum(itemCost, { min: 0, fallback: 0 }), [itemCost]);
+    const imprint4x4Safe = useMemo(() => clampNum(imprint4x4, { min: 0, fallback: 0 }), [imprint4x4]);
+    const imprint14x9Safe = useMemo(() => clampNum(imprint14x9, { min: 0, fallback: 0 }), [imprint14x9]);
+    const stitchesSafe = useMemo(() => clampNum(stitches, { min: 0, fallback: 0 }), [stitches]);
+    const specialtyCountSafe = useMemo(() => clampNum(specialtyCount, { min: 0, fallback: 0 }), [specialtyCount]);
+
+    const basePrice = useMemo(() => calculateBasePrice(itemCostSafe), [itemCostSafe]);
+    const markupCondition = useMemo(() => getMarkupCondition(itemCostSafe), [itemCostSafe]);
+    const markupComputation = useMemo(() => getMarkupComputation(itemCostSafe), [itemCostSafe]); 
+    const embroideryText = useMemo(() => getEmbroideryText(stitchesSafe), [stitchesSafe]);
+
     const frontSurcharge = useMemo(() => {
       if (frontColorsSafe <= 0) return 0;
       return frontFirstColorPrice + (frontColorsSafe - 1) * frontAddlColorPrice;
@@ -559,6 +603,13 @@
       if (backColorsSafe <= 0) return 0;
       return backFirstColorPrice + (backColorsSafe - 1) * backAddlColorPrice;
     }, [backColorsSafe, backFirstColorPrice, backAddlColorPrice]);
+    const imprintSurcharge = useMemo(() => imprint4x4Safe * 5 + imprint14x9Safe * 8.5, [imprint4x4Safe, imprint14x9Safe]);
+    const embroiderySurcharge = useMemo(() => {
+      if (stitchesSafe === 0) return 0;
+      if (stitchesSafe < 5000) return 8.5;
+      return 8.5 + 3 * Math.ceil((stitchesSafe - 5000) / 1000);
+    }, [stitchesSafe]);
+    const specialtySurcharge = useMemo(() => specialtyCountSafe * 3, [specialtyCountSafe]);
 
     // NEW: choose the last non-zero deduction among eligible thresholds
     const appliedBreak = useMemo(() => {
@@ -591,19 +642,16 @@
       return null; // none with non-zero deduction
     }, [backColorsSafe, priceBreaksBackColor]);
 
-    const unitPrice = useMemo(() => {
-      const frontAppliedDeduct = appliedBreakFrontColor?.deduct || 0;
-      const backAppliedDeduct = appliedBreakBackColor?.deduct || 0;;
-      return clampNum(basePrice, { min: 0 }) + Math.max(0, frontSurcharge) + Math.max(0, backSurcharge);
-    }, [basePrice, frontSurcharge, backSurcharge]);
+    const rawUnitPrice = useMemo(() => basePrice + frontSurcharge + backSurcharge + imprintSurcharge + embroiderySurcharge + specialtySurcharge, 
+    [basePrice, frontSurcharge, backSurcharge, imprintSurcharge, embroiderySurcharge, specialtySurcharge]);
+    const rawTotalPrice = useMemo(() => rawUnitPrice * qtySafe, [rawUnitPrice, qtySafe]);
 
-    const totalPrice = useMemo(() => unitPrice * qtySafe, [unitPrice, qtySafe]);
+    const frontDeduct = useMemo(() => appliedBreakFrontColor?.deduct || 0, [appliedBreakFrontColor]);
+    const backDeduct = useMemo(() => appliedBreakBackColor?.deduct || 0, [appliedBreakBackColor]);
+    const quantityDeduct = useMemo(() => appliedBreak?.deduct || 0, [appliedBreak]);
 
-    const finalPrice = useMemo(() => {
-      const frontAppliedDeduct = appliedBreakFrontColor?.deduct || 0;
-      const backAppliedDeduct = appliedBreakBackColor?.deduct || 0;
-      return Math.max(0, totalPrice - (appliedBreak?.deduct || 0) - frontAppliedDeduct - backAppliedDeduct);
-    }, [basePrice, appliedBreakFrontColor, appliedBreakBackColor, totalPrice]);
+    const totalDeductions = useMemo(() => (frontDeduct + backDeduct + quantityDeduct), [frontDeduct, backDeduct, quantityDeduct]);
+    const finalPrice = useMemo(() => Math.max(0, rawTotalPrice - totalDeductions), [rawTotalPrice, totalDeductions]);
 
     // inputs helpers
     const clearZeroOnFocus = (val, setter) => { if (String(val) === "0") setter(""); };
@@ -625,23 +673,23 @@
           // LEFT: inputs
           e('div', null,
 
-            // Base price
+            // Item cost
             e('div', { className: 'field' },
-              e('div', {
-                className: 'label-row',
-                style: { display:'flex', alignItems:'center', justifyContent:'space-between' }
-              },
-                e('label', null, 'Base Price (per unit)'),
-                e('span', { className: 'muted' }, 'Manually entered')
-              ),
+              e('label', null, 'Item Cost (per unit)'),
               e('input', {
                 className: 'input',
                 type: 'number', min: 0, step: '0.01', inputMode: 'decimal',
-                value: basePrice,
-                onFocus: () => clearZeroOnFocus(basePrice, setBasePrice),
-                onChange: parseOnChange(setBasePrice, { min: 0, fallback: 0 }),
-                onBlur: () => setBasePrice((v) => (v === "" ? 0 : v))
-              })
+                value: itemCost,
+                onFocus: () => clearZeroOnFocus(itemCost, setItemCost),
+                onChange: parseOnChange(setItemCost, { min: 0, fallback: 0 }),
+                onBlur: () => setItemCost((v) => (v === "" ? 0 : v))
+              }),
+              e('div', { className: 'muted', style:{ marginTop: '4px' } },
+                `${markupCondition} then item is marked up to ${money(basePrice)}`
+              ),
+              e('div', { className: 'muted', style:{ marginTop: '0' } },
+                `${markupComputation}`
+              )
             ),
 
             // Quantity + button
@@ -677,7 +725,7 @@
 
             // Front & Back colors
             e('div', { className: 'field' },
-              e('div', { style: { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' } },
+              e('div', { className: 'dualColumn', style: { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' } },
                 e('div', null,
                   e('div', {
                     className: 'label-row',
@@ -739,6 +787,65 @@
                         'No back color break applied')
                 )
               )
+            ),
+
+            // Imprint
+            e('div', { className: 'field' },
+              e('label', null, 'Imprint'),
+              e('div', { className: 'dualColumn', style: { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' } },
+                e('div', null,
+                  e('label', { style: { fontSize: '12px', color: '#6b7280', fontWeight: 700 } }, '4x4 Logos'),
+                  e('input', {
+                    className: 'input',
+                    type: 'number', min: 0, inputMode: 'numeric',
+                    value: imprint4x4,
+                    onFocus: () => clearZeroOnFocus(imprint4x4, setImprint4x4),
+                    onChange: parseOnChange(setImprint4x4, { min: 0, fallback: 0 }),
+                    onBlur: () => setImprint4x4((v) => (v === "" ? 0 : v))
+                  }),
+                  e('span', { className: 'muted' }, '$5 per logo')
+                ),
+                e('div', null,
+                  e('label', { style: { fontSize: '12px', color: '#6b7280', fontWeight: 700 } }, '14x9 Logos'),
+                  e('input', {
+                    className: 'input',
+                    type: 'number', min: 0, inputMode: 'numeric',
+                    value: imprint14x9,
+                    onFocus: () => clearZeroOnFocus(imprint14x9, setImprint14x9),
+                    onChange: parseOnChange(setImprint14x9, { min: 0, fallback: 0 }),
+                    onBlur: () => setImprint14x9((v) => (v === "" ? 0 : v))
+                  }),
+                  e('span', { className: 'muted' }, '$8.50 per logo')
+                )
+              )
+            ),
+
+            // Embroidery
+            e('div', { className: 'field' },
+              e('label', null, 'Embroidery Stitches'),
+              e('input', {
+                className: 'input',
+                type: 'number', min: 0, inputMode: 'numeric',
+                value: stitches,
+                onFocus: () => clearZeroOnFocus(stitches, setStitches),
+                onChange: parseOnChange(setStitches, { min: 0, fallback: 0 }),
+                onBlur: () => setStitches((v) => (v === "" ? 0 : v))
+              }),
+              stitchesSafe > 0 && e('div', { className: 'muted', style:{ marginTop: '4px' } }, embroideryText)
+            ),
+
+            // Specialty
+            e('div', { className: 'field' },
+              e('label', null, 'Specialty Inks/Materials'),
+              e('input', {
+                className: 'input',
+                type: 'number', min: 0, inputMode: 'numeric',
+                value: specialtyCount,
+                onFocus: () => clearZeroOnFocus(specialtyCount, setSpecialtyCount),
+                onChange: parseOnChange(setSpecialtyCount, { min: 0, fallback: 0 }),
+                onBlur: () => setSpecialtyCount((v) => (v === "" ? 0 : v))
+              }),
+              e('span', { className: 'muted' }, '$3 per item')
             )
           ),
 
@@ -747,7 +854,7 @@
             e('div', { className: 'totals' },
               e('div', { className: 'line' },
                 e('span', null, 'Base Price'),
-                e('strong', null, money(clampNum(basePrice, { min: 0 })))
+                e('strong', null, money(basePrice))
               ),
               e('div', { className: 'line' },
                 e('span', null, 'Front Surcharge'),
@@ -757,27 +864,38 @@
                 e('span', null, 'Back Surcharge'),
                 e('strong', null, money(backSurcharge))
               ),
+              e('div', { className: 'line' },
+                e('span', null, 'Imprint Surcharge'),
+                e('strong', null, money(imprintSurcharge))
+              ),
+              e('div', { className: 'line' },
+                e('span', null, 'Embroidery Surcharge'),
+                e('strong', null, money(embroiderySurcharge))
+              ),
+              e('div', { className: 'line' },
+                e('span', null, 'Specialty Surcharge'),
+                e('strong', null, money(specialtySurcharge))
+              ),
               e('div', { className: 'line', style: { marginTop:'8px', borderTop:'1px solid #e5e7eb', paddingTop:'8px' } },
                 e('span', null, 'Unit Price'),
-                e('strong', null, money(unitPrice))
+                e('strong', null, money(rawUnitPrice))
               ),
-              e('div', { className: 'line', style: { marginTop:'8px', borderTop:'1px solid #e5e7eb', paddingTop:'8px' } }),
               e('div', { className: 'grand' },
                 e('span', { className: 'label' }, `Price For ${intFmt.format(qtySafe)} Unit${qtySafe !== 1 ? 's' : ''}`),
-                e('span', { className: 'value' }, money(totalPrice))
+                e('span', { className: 'value' }, money(rawTotalPrice))
               ),
               e('div', { className: 'line', style: { marginTop:'8px', borderTop:'1px solid #e5e7eb', paddingTop:'8px' } }),
               appliedBreakFrontColor && e('div', { className: 'line' },
                 e('span', null, `Front Color Deduction`),
-                e('strong', { className: 'deduction' }, `−${money(appliedBreakFrontColor.deduct)}`)
+                e('strong', { className: 'deduction' }, `−${money(frontDeduct)}`)
               ),
               appliedBreakBackColor && e('div', { className: 'line' },
                 e('span', null, `Back Color Deduction`),
-                e('strong', { className: 'deduction' }, `−${money(appliedBreakBackColor.deduct)}`)
+                e('strong', { className: 'deduction' }, `−${money(backDeduct)}`)
               ),
               appliedBreak && e('div', { className: 'line' },
                 e('span', null, `Quantity Deduction`),
-                e('strong', { className: 'deduction' }, `−${money(appliedBreak.deduct)}`)
+                e('strong', { className: 'deduction' }, `−${money(quantityDeduct)}`)
               ),
               e('div', { className: 'grand' },
                 e('span', { className: 'label' }, `Final Price After Deductions`),

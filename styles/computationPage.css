@@ -177,3 +177,9 @@
 .deduction {
 	color:  #c9504c;
 }
+
+@media (max-width: 600px) {
+	.dualColumn {
+		grid-template-columns: 100% !important;
+	}
+}
