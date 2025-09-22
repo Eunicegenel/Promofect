@@ -40,8 +40,13 @@
   }; 
   
   const getEmbroideryText = (stitches) => {
-    if (stitches < 5000) return "$8.50 per logo";
-    else return "$8.50 + $3 per 1000 stitches over 5000";
+    if (stitches <= 0) return '';
+    return stitches <= 5000 ? '$8.50 per logo' :
+      stitches <= 7500 ? '$11.50 per logo' :
+      stitches <= 10000 ? '$14.50 per logo' :
+      stitches <= 15000 ? '$17.50 per logo' :
+      stitches <= 20000 ? '$20.50 per logo' :
+      '$23.50 per logo';
   };
 
   // ---------- Default price breaks ----------
@@ -512,13 +517,14 @@
 
   // ---------- Main component ----------
   function Computation() {
-    const [itemCost, setItemCost]       = useState(0);
-    const [qty, setQty]                 = useState(1);
+    const [itemCost, setItemCost] = useState(0);
+    const [qty, setQty] = useState(1);
     const [frontColors, setFrontColors] = useState(1);
-    const [backColors, setBackColors]   = useState(0);
-    const [imprint4x4, setImprint4x4]   = useState(0);
+    const [backColors, setBackColors] = useState(0);
+    const [imprint4x4, setImprint4x4] = useState(0);
     const [imprint14x9, setImprint14x9] = useState(0);
-    const [stitches, setStitches]       = useState(0);
+    const [stitches, setStitches] = useState(0);
+    const [logoQty, setLogoQty] = useState(0);
     const [specialtyCount, setSpecialtyCount] = useState(0);
 
     const [priceBreaks, setPriceBreaks] = useState(() => {
@@ -605,10 +611,14 @@
     }, [backColorsSafe, backFirstColorPrice, backAddlColorPrice]);
     const imprintSurcharge = useMemo(() => imprint4x4Safe * 5 + imprint14x9Safe * 8.5, [imprint4x4Safe, imprint14x9Safe]);
     const embroiderySurcharge = useMemo(() => {
-      if (stitchesSafe === 0) return 0;
-      if (stitchesSafe < 5000) return 8.5;
-      return 8.5 + 3 * Math.ceil((stitchesSafe - 5000) / 1000);
-    }, [stitchesSafe]);
+      const basePrice = stitches <= 5000 ? 8.50 :
+        stitches <= 7500 ? 11.50 :
+        stitches <= 10000 ? 14.50 :
+        stitches <= 15000 ? 17.50 :
+        stitches <= 20000 ? 20.50 :
+        23.50;
+      return basePrice * logoQty;
+    }, [stitches, logoQty]);
     const specialtySurcharge = useMemo(() => specialtyCountSafe * 3, [specialtyCountSafe]);
 
     // NEW: choose the last non-zero deduction among eligible thresholds
@@ -822,16 +832,38 @@
 
             // Embroidery
             e('div', { className: 'field' },
-              e('label', null, 'Embroidery Stitches'),
-              e('input', {
-                className: 'input',
-                type: 'number', min: 0, inputMode: 'numeric',
-                value: stitches,
-                onFocus: () => clearZeroOnFocus(stitches, setStitches),
-                onChange: parseOnChange(setStitches, { min: 0, fallback: 0 }),
-                onBlur: () => setStitches((v) => (v === "" ? 0 : v))
-              }),
-              stitchesSafe > 0 && e('div', { className: 'muted', style:{ marginTop: '4px' } }, embroideryText)
+              e('div', { className: 'dualColumn', style: { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' } },
+                e('div', null,
+                  e('label', null, 'Number of Stitches'),
+                  e('input', {
+                    className: 'input',
+                    type: 'number', min: 0, inputMode: 'numeric',
+                    value: stitches,
+                    onFocus: () => clearZeroOnFocus(stitches, setStitches),
+                    onChange: parseOnChange(setStitches, { min: 0, fallback: 0 }),
+                    onBlur: () => setStitches((v) => (v === "" ? 0 : v))
+                  }),
+                  stitchesSafe > 0 && e('div', { className: 'muted', style:{ marginTop: '4px' } },
+                    stitchesSafe <= 5000 ? '$8.50 per logo' :
+                    stitchesSafe <= 7500 ? '$11.50 per logo' :
+                    stitchesSafe <= 10000 ? '$14.50 per logo' :
+                    stitchesSafe <= 15000 ? '$17.50 per logo' :
+                    stitchesSafe <= 20000 ? '$20.50 per logo' :
+                    '$23.50 per logo'
+                  )
+                ),
+                e('div', null,
+                  e('label', null, 'Quantity'),
+                  e('input', {
+                    className: 'input',
+                    type: 'number', min: 0, inputMode: 'numeric',
+                    value: logoQty,
+                    onFocus: () => clearZeroOnFocus(logoQty, setLogoQty),
+                    onChange: parseOnChange(setLogoQty, { min: 0, fallback: 0 }),
+                    onBlur: () => setLogoQty((v) => (v === "" ? 0 : v))
+                  })
+                )
+              )
             ),
 
             // Specialty
